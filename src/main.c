@@ -25,6 +25,12 @@
  *
  * */
 
+int validate_conversion(long tmp_val) {
+  return errno == ERANGE || tmp_val > INT_MAX || tmp_val < INT_MIN;
+}
+
+int validate_divisibility(int K, int B) { return K % B == 0; }
+
 int main(int argc, char **argv) {
 
   if (argc <= 5) {
@@ -32,6 +38,7 @@ int main(int argc, char **argv) {
     return EXIT_FAILURE;
   }
 
+  // Assigning and Validating inputs linearly
   int B, J;
   long tmp[2];
   for (int i = 0; i < 2; i++) {
@@ -39,8 +46,8 @@ int main(int argc, char **argv) {
     char *end = NULL;
     tmp[i] = strtol(argv[i + 1], &end, 10);
 
-    if (errno == ERANGE || tmp[i] > INT_MAX || tmp[i] < INT_MIN) {
-      perror("strtol error");
+    if (validate_conversion(tmp[i])) {
+      perror("strtol error: 1/2");
       return EXIT_FAILURE;
     }
 
@@ -52,6 +59,10 @@ int main(int argc, char **argv) {
 
   B = (int)tmp[0];
   J = (int)tmp[1];
+  if (J % B != 0) {
+    fprintf(stderr, "INVALID INPUT: J must be divisible by B");
+    return EXIT_FAILURE;
+  }
 
   printf("DEBUG: B(%d) and J(%d) are successfully initialized\n", B, J);
 
@@ -62,7 +73,23 @@ int main(int argc, char **argv) {
     fprintf(stderr, "Error opening file %s", PATH);
     return EXIT_FAILURE;
   } else
-    printf("DEBUG: File of path %s SUCCESS.", PATH);
+    printf("DEBUG: File of path %s SUCCESS.\n", PATH);
+
+  int K;
+  errno = 0;
+  char *end = NULL;
+  long val = strtol(argv[4], &end, 10);
+  if (validate_conversion(val)) {
+    perror("strtol error: 2/2");
+    return EXIT_FAILURE;
+  }
+  K = (int)val;
+  if (!validate_divisibility(K, B)) {
+    fprintf(stderr, "INVALID INPUT: K must be divisible by B");
+    return EXIT_FAILURE;
+  }
+
+  printf("DEBUG: Successfully validated K(%d)\n", K);
 
   return EXIT_SUCCESS;
 }
