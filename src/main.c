@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define MAX_PATH_FILES 12
+
 /*
  * INPUTS
  *
@@ -29,7 +31,7 @@ int validate_conversion(long tmp_val) {
   return errno == ERANGE || tmp_val > INT_MAX || tmp_val < INT_MIN;
 }
 
-int validate_divisibility(int K, int B) { return K % B == 0; }
+int validate_divisibility(int num, int B) { return num % B == 0; }
 
 int main(int argc, char **argv) {
 
@@ -90,6 +92,13 @@ int main(int argc, char **argv) {
   }
 
   printf("DEBUG: Successfully validated K(%d)\n", K);
+
+  char *disk_path[MAX_PATH_FILES];
+  for (int i = 5; i < argc; i++) {
+    disk_path[i - 5] = argv[i];
+    printf("DEBUG: Given path to disk %d: %s\n", i - 4, disk_path[i - 5]);
+  }
+  printf("WARNING: Paths to hard disks are pending validation!");
 
   return EXIT_SUCCESS;
 }
