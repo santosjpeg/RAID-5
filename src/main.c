@@ -14,8 +14,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_PATH_LENGTH 256
-
 /*
  * INPUTS
  *
@@ -28,14 +26,13 @@
  * */
 
 int main(int argc, char **argv) {
-  int B, J, K;
-  char *PATH[MAX_PATH_LENGTH];
 
   if (argc <= 5) {
     fprintf(stderr, "Invalid Usage. Must have at least 5 arguments.");
     return EXIT_FAILURE;
   }
 
+  int B, J;
   long tmp[2];
   for (int i = 0; i < 2; i++) {
     errno = 0;
@@ -56,7 +53,16 @@ int main(int argc, char **argv) {
   B = (int)tmp[0];
   J = (int)tmp[1];
 
-  printf("DEBUG: B(%d) and J(%d) are successfully initialized:", B, J);
+  printf("DEBUG: B(%d) and J(%d) are successfully initialized\n", B, J);
+
+  FILE *fp;
+  char *PATH = argv[3];
+  fp = fopen(PATH, "r");
+  if (!fp) {
+    fprintf(stderr, "Error opening file %s", PATH);
+    return EXIT_FAILURE;
+  } else
+    printf("DEBUG: File of path %s SUCCESS.", PATH);
 
   return EXIT_SUCCESS;
 }
